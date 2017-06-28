@@ -195,19 +195,111 @@ console.log(double(3))
 
 ## 使用ESLint改善我们的代码质量并保证一致性
 
+随着我们的代码量越来越多，我们会面临很多问题，一些代码是多余的并不再那么有用，写新的代码，删除一些不再相关或必须的特性，运用新架构而相应的调整代码位置。随着代码量增多，团队人员也会相应变化，期初可能只有少数人甚至一个人，但是随着项目的扩大，开发人员也随值增多。
+
+lint工具可以用于识别语法错误，现代的lint工具常常是可自定义的，这能帮助构建一种对团队里每个人都适用的编码风格。通过标准化样式规则和质量基线，我们能让团队在编码风格保持一致。团队中的每个人可能对编码风格都有自己的看法，但是当我们以合适的配置适用linter工具，它们的意见可以被抽象为编码样式规则。
+
+除了确保程序可被解析外，我们可能还希望防止`throw`语句抛出异常语句，或者在生产代码中不允许出现`console.log`和`debugger`语句。但是，要求每个函数执行时都至少含有一个参数的规则也许过于苛刻。
+
+尽管linter在定义和实行编码风格方面是有效的，但是我们也应该小心定义风格，如果规则过于严格，开发人员可能会沮丧到影响开发效率，如果过于宽松，可能又难以维持代码的一致性。
+
+ESlink是一个具有很多插件的现代linter工具，它支持众多规则，并允许我们挑选需要的规则去遵守。我们可以决定在没有准守这些规则时会在输出中打印出警告语句或者错误。我们可以使用`npm` 用类似安装`babel`的方法安装`eslint`，使用`npm`
+
+```js
+npm install eslint@3 --save-dev
+```
+
+接下来，我们需要配置ESlint,由于我们把eslint安装为了本地依赖，我们可以在`node_modules/.bin`文件夹下找到对应的命令行工具。执行下面的命令行命令将引导我们完成对项目的首次配置。我们选用`standard`已采用流行风格，选择配置文件为`JSON`格式:
+
+```js
+./node_modules/.bin/eslint --init
+? How would you like to configure ESLint?
+  Use a popular style guide
+? Which style guide do you want to follow? Standard
+? What format do you want your config file to be in? JSON
+```
+
+除了个人风格，`eslint`允许我们拓展预定义的风格，这些拓展都以node.js的包呈现。当你在多项目甚至社区中分享配置时这非常有用。在选择`standard`风格之后，我们还注意到`ESlint`添加了一些依赖到`package.json`中，即预定义标准风格的包，同时创建了一个名为`.eslintrc.json`的配置文件，如下所示：
+
+```js
+{
+  "extends": "standard",
+  "plugins": [
+    "standard",
+    "promise"
+  ]
+}
+```
+
+从`node_modules/bin`目录中引入npm命令，这样用起来感觉很不好，当我们初始化我们的`ESlint`配置文件时就是这样用的，我们总不能之后每次都带上`node_modules/bin`吧，这样太麻烦了。为了解决这个问题，我们把`lint`命令也添加到`package.json`中：
+
+```js
+{
+  "scripts": {
+    "lint": "eslint ."
+  }
+}
+```
+
+也许你还记得，`npm run`会临时把`node_modules`名录添加到`$PATH`中。现在当我想lint我们的代码时，我们只需要输入`npm run lint`，npm就会自动执行深藏在`node_modules`中的ESLint CLI命令了
+
+还是以`example.js`文件为例，这个文件目前可能存在一些样式问题，我们来看看`ESLint`会为我们做什么：
+
+```js
+// expamle.js
+var goodbye='Goodbye!'
+
+function hello(){
+  return goodbye}
+
+if(false){}
+```
+
+当我们执行`lint`脚本，ESlint会列出这个文件中的所有问题，如下：
+
+![ESLint 错误示例](https://ponyfoo.com/books/practical-modern-javascript/img/pmjs_0102.png)
+
+如果我们在执行上述命令的时候 添加参数 `--fix`，eslint会为我们修复大部分的问题，我们修改`package.json`如下
+
+```js
+{
+  "scripts": {
+    "lint-fix": "eslint . --fix"
+  }
+}
+```
+
+当我们执行 `lint --fix`的时候，我们会发现现在的错误只是说 `hello` 从未使用过，`false`是一个不变的状态，其它的问题都被修复了，修复后的代码如下，由于ESLint不对我们的代码做假设，出问题的代码没有被修复，ESlint 也不想造成语义变化，基于此，`--fix`的参数是我们解决代码风格问题时的有效帮手，并且它不会搅乱我买额程序。
+
+```js
+// 修改后的example.js
+var goodbye = 'Goodbye!'
+
+function hello() {
+  return goodbye
+}
+
+if (false) {}
+```
+
+> `prettier`是另一个类似的工具，它会自动规范化我们的代码，当给定一些固定的规则，比如所讲的空格数，单引号还是双引号，尾逗号，以及一行最大长度时，`prettier`会实现我们的代码的自动重写。
+> 
+
+现在你已经知道了如何转译现代的JS为浏览器普遍支持的JS了，也知道如何合适的使用lint来规范代码，下面我们来学习ES6特性以及JS的未来。
 
 
+## ES6中的新特性
+
+ES6改动非常大，要知道ES5.1的规范一共才258页，ES6的规范达到了566页，规范的改变属于都属于一些不同的类别：
+
+- 语法糖
+- 新机制
+- 更好的语义化
+- 更多内置的方法
+- 现存局限的非破坏性解决方案
 
 
-
-
-
-
-
-
-
-
-
+语法糖是ES6所有改变中最重要的一块，通过`class`语法可简洁的构建对象实例，支持使用箭头函数，属性方法支持简写了，我们还将探讨一些别的特性，如果解构，剩余值，和拓展，ES6还提供语义良好的编写程序的方法。第二章 ES6 Essentials and Classes, Symbols, Objects, and Decorators将讨论ES6 的这些新特性。
 
 
 
