@@ -77,6 +77,123 @@ state3阶段的代码属于候选推荐代码了，为了使规范达到这个�
 下面我们谈谈在你的工作流中该如何使用`Babel`。
 
 
+## Babel转译器简介
+Babel可以转义ES6代码为ES5代码，经转义的代码是易读的，这在我们对新特性还未牢牢掌握时非常有用。
+
+在线的[Babel REPL (Read-Evaluate-Print Loop）](https://babeljs.io/repl/)为我们学习ES6提供了很好的途径，它不需要我们安装Node.js,也不需要使用`Babel` CLI就可以手动的转译源代码。
+
+Babel REPL可以让我们输入源代码并在运行时自动编译，我们可以在右侧看到编译后的代码。
+
+我们一起来试试REPL，我们以下述代码开始：
+
+```js
+var double = value => value * 2
+console.log(double(3))
+// <- 6
+```
+
+在右侧我们可以看到编译为ES5的结果，如下图所示，当你更新左侧代码时，右侧也会实时更新
+![图1 online Babel REPL](https://ponyfoo.com/books/practical-modern-javascript/img/pmjs_0101.png)
+
+在练习本书提到的ES6特性时，Babel REPL是个很好的实践处，不过需要注意的是，Babel不能转译新增的类似`Symbol`,`Proxy`,`WeakMap`等内置指令，这些新特性并非被忽略了，其是否转译取决了运行时是否提供了Babel相关插件，如果我们想在运行时使用这些还未被执行的内置方法，我们需要在我们的代码中引入`babel-ployfill`.
+
+在老版本的JS中，想要正确执行这些新语句是很难的或者几乎是不可完成的。polyfills可以减缓这种问题，但是通常它们并不能百分百覆盖所有情况，因此其实际上是一种折中处理。因此在生成环境中如果使用了这些新内置语法，就算通过ployfill转译了，我们也应该在正式上线前仔细测试。
+
+基于此，对于这些无法解析的内置语法，我们最好还是等浏览器完全支持以后再使用，这就需要你在开发过程中选用不使用这些新语法的其它方法。但是与此同时，我们又应该学习这些新特性，使得自己对JS语言有更深刻的理解。
+
+诸如Chrome，Firefox，Edge等现代浏览器现在已经支持ES2015甚至更新的语法的大部分功能了，这使得我们在使用某个新语法时，由于浏览器的支持，开发者工具非常有效。当涉及到基于新特性的生产阶段的应用时，我们还是推荐给你的代码添加转译，这使得代码的可适用性更广。
+
+除了REPL，我们还可以在命令行中实现转译，这需要用到Babel提供的一个node.js包，你可以通过`npm`的形式安装这个包。
+
+我们新建一个node.js项目用做练习，新建目录，打开目录所在位置的终端，并通过`npm`CLI就可以实现这个目录的初始化；
+
+```js
+mkdir babel-setup
+cd babel-setup
+npm init --yes # yes参数使得初始化时采用默认设置
+```
+
+接下来我们创建一个名为`example.js`的文件，在babel-setup目录下新建子目录 src,并把这个文件保存其中，添加下述内容
+
+```js
+var double = value => value * 2
+console.log(double(3))
+// <- 6
+```
+
+在你喜欢的终端工具中输入以下内容就可以完成Babel的安装：
+
+```js
+npm install babel-cli​@6 --save-dev
+npm install babel-preset-env@6 --save-dev
+```
+
+> 注：通过`npm`指令初始化的node项目，会自动在根目录新建一个名为node_modules的文件夹，之后我们通过`npm scripts`或通过`require`语句就可以在项目中引用这些包
+
+> 使用`--save-dev`参数将会新安装的包添加到我们的package.json配置文件中作为开发依赖项，当我们把我们的项目复制到新的环境中时，我们只需要通过`npm install`指令完成依赖环境的安装。
+> 
+> `@`标记用以指定安装某特定版本的包，使用`@6`，`npm`将安装`babel-cli`,`6.x`版中的最新版。这种偏好设置可以非常有效的在未来保护我们的应用，永远不会安装`7.0.0`或者更新的版本，这些新版本可能包含我们在此时开发时无法预料的重大改变。
+> 
+
+
+接下来，我们要按照下面的方法替换`package.json`文件中的`scripts`，由`babel-cli`提供的`babel`命令会检测整个`src`目录，把他们转换为我们想要的输出格式，并存储在目录`dist`中，这将防止原来根目录下的源文件目录受到影响。
+
+```js
+{
+  "scripts": {
+    "build": "babel src --out-dir dist"
+  }
+}
+```
+
+通过上面的操作，现在我们的`package.json`应该是下面这个样子了
+
+```js
+{
+  "scripts": {
+    "build": "babel src --out-dir dist"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-env": "^1.2.1"
+  }
+}
+```
+
+> 任何写作`scripts`对象中的命令都可以通过`npm run <name>`来执行，它会暂时修改`$PATH`的值，这使得我们在未全局安装`babel-cli`的前提下也可以成功运行`babel-cli`
+> 
+
+
+现在如果你在命令行中执行`npm run build`，你会发现系统自动新建了`dist/example.js`文件，输出文件目前会和我们的源代码一致，这是因为`babel`并不会自动给我们添加配置文件，我们需要在根目录创建文件`.babelrc`输入下述代码进行配置
+
+```js
+{
+  "presets": ["env"]
+}
+```
+
+我们现在安装的`env`preset,会在构建时添加一系列的Babel插件，这些插件可以转换不同的ES6代码为ES5代码，此时我们会看到我们在`example.js`中使用的箭头函数被转换为了ES5代码，`env` 预设依照协议，使得Babel依据最新的浏览器支持情况转换JS代码，这个预设是可以配置的，这意味着我们可以决定支持多新的浏览器。我们想要支持的浏览器越多，我们需要做的转换工作就越大，所做的转换工作越少，意味着可正常使用的用户也越少。我们需要通过调研来确定`env`预设的正确配置，默认情况下所有的转换都会被启用，以提供尽可能广泛的支持。
+
+我们执行转义后，转译后的ES5代码如下：
+
+```js
+» npm run build
+» cat dist/example.js
+"use strict"
+
+var double = function double(value) {
+  return value * 2
+}
+console.log(double(3))
+// <- 6
+
+```
+
+
+下面我们来说明如果使用另外一个非常有用的工具，`eslint`，它可以依据某个基线帮助我们改善代码质量。
+
+
+## 使用ESLint改善我们的代码质量并保证一致性
 
 
 
