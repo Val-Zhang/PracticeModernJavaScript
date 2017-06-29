@@ -211,7 +211,7 @@ npm install eslint@3 --save-dev
 
 接下来，我们需要配置ESlint,由于我们把eslint安装为了本地依赖，我们可以在`node_modules/.bin`文件夹下找到对应的命令行工具。执行下面的命令行命令将引导我们完成对项目的首次配置。我们选用`standard`已采用流行风格，选择配置文件为`JSON`格式:
 
-```js
+```bash
 ./node_modules/.bin/eslint --init
 ? How would you like to configure ESLint?
   Use a popular style guide
@@ -301,8 +301,58 @@ ES6改动非常大，要知道ES5.1的规范一共才258页，ES6的规范达到
 
 语法糖是ES6所有改变中最重要的一块，通过`class`语法可简洁的构建对象实例，支持使用箭头函数，属性方法支持简写了，我们还将探讨一些别的特性，如果解构，剩余值，和拓展，ES6还提供语义良好的编写程序的方法。第二章 ES6 Essentials and Classes, Symbols, Objects, and Decorators将讨论ES6 的这些新特性。
 
+ES6为我们提供了几种控制异步代码流的机制：`promises`,代表一种运算的最终结果，`iterators`，表示一系列值，`generators`是一种特殊的`iterators`,能够产生一系列值。在ES2017基于这些新概念还提出了`async/await`，让我们以同步的方式来书写异步代码。在[Iteration and Flow Control]()一节中，我们将详细叙述各种机制。
+
+JavaScript中有一种常见的做法，即开发人员使用普通对象创建任意字符串键的哈希映射。但是如果我们不小心使用,让用户输入结束了这些键，就会导致错误，ES6提供了一些新的内置类型来管理set和map,这些新类型不具有仅使用字符串键的限制，关于这些方面的探讨，我们会在[Practical Considerations]()这一节中进行。
+
+Proxy对象重新定义了我们通过JavaScript reflection可以做什么，Proxy对象类似于其它上下文中的代理（比如网络流量路由）。它们可以修改与JavaScript对象的任何交互，如定义、删除或访问属性。考虑到代理对象的工作机制，他们不能通过`ployfill`实现，事实上相关的`ployfill`也是存在的，但是由于它们的局限性使得他们在某些方面与规范有所不一致。我们将在[ Managing Property Access with Proxies]()这一节彻底理解代理对象。
+
+除了这些新的内建语法，ES6对`Number`,`Math`,`Array`和`string`都有所更新。在[Build-in Improvement in ES6]()这一节，我们将通过大量的示例来解释这些新概念。
+
+ES6还在语言层面上为我们提供了模块系统，在讲述`CommonJS`模块系统在node.js中的使用后，[JavaScript Modules]()一节里，我们将讲述JS的模块系统。
+
+考虑到ES6的改动之大，我们很难用我们现有的JS知识理解所有的新特性，在[ Practical Considerations ]()一节我们会分析各ES6特性的优点和重要性，以便你可以对如何动手使用ES6有一个基础的概念。
+
+## JS语言的未来
+
+从1995年的卑微出生到今天的强大功能，JS变化巨大，ES6就是这变化过程中的一大步，当然这肯定不是终点，考虑到标准每年都会更新，学会如何和最新标准保持一致非常重要。
+
+前面我们已经说明了，ES是一个滚动的标准，最好的学习新标准的方法是周期性的浏览TC39的建议库，尤其有注意处于候选阶段的stage3阶段的提议，这些很可能就是之后的标准。
+
+在书中描述一个不断变化的语言是一个大的挑战，尤其是考虑到标准也是在不断演化的。与新的JavaScript更新保持一个有效的方法是看TC39建议库，订阅每周电子邮件，和阅读JavaScript的博客。
+
+在写本书的时候，等待已久的`Async Functions `提议已经定于在ES2017中发布。同时还有一些处于候选阶段的提议，比如动态`import()`，这允许异步的加载本地JS模块，还有一个建议用ES6中的`rest`和 `spread`语法 对对象属性进行枚举。
+
+尽管本书主体集中讨论ES6，我们也会学习一些重要的候选方案，如之前已经提及的`async functions`,`dynamic import()`，`calls`以及对象的 `rest/spread`和一些其它的属性。
 
 
 
+1. A booklet from 1998 explains the intricacies of server-side JavaScript with LiveWire.
 
-- [1] A [booklet from 1998](https://mjavascript.com/out/livewire) explains the intricacies of server-side JavaScript with LiveWire.
+2. You can read the original announcement at the Microsoft website (July, 2000).
+
+3. Listen to Brendan Eich in the JavaScript Jabber podcast, talking about the origin of JavaScript.
+
+4. You can read a news report from The Mac Observer, July 2003.
+
+5. Brendan Eich sent an email to the es-discuss mailing list in 2008 where he summarized the situation, almost 10 years after ES3 had been released.
+
+6. For the full set of changes made when merging the Web ECMAScript specification upstream, see the WHATWG blog.
+
+7. Check out the presentation “Post-ES6 Spec Process” from September 2013 that led to the streamlined proposal revisioning process here.
+
+8. Check out all of the proposals being considered by TC39.
+
+9. Check out this detailed table reporting ES6 compatibility across browsers.
+
+10. Take a look at the TC39 proposal process documentation.
+
+11. You can track strawman proposals.
+
+12. Note that Standard is just a self-proclamation, and not actually standardized in any official capacity. It doesn’t really matter which style guide you follow as long as you follow it consistently. Consistency helps reduce confusion while reading a project’s codebase. The Airbnb style guide is also fairly popular and it doesn’t omit semicolons by default, unlike Standard.
+
+13. Check out all of the proposals being considered by TC39.
+
+14. There are many newsletters, including Pony Foo Weekly and JavaScript Weekly.
+
+15. Many of the articles on Pony Foo and by Axel Rauschmayer focus on ECMAScript development.
