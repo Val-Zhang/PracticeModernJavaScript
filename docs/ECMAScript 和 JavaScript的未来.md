@@ -337,6 +337,7 @@ ES6还在语言层面上为我们提供了模块系统，[JavaScript Modules]()�
 尽管本书主要将讨论ES6，我们也会学习一些重要的候选方案，如之前已经提及的`async functions`,`dynamic import()`，`calls`以及对象的 `rest/spread`和一些其它的属性。
 
 
+## 参考文献
 
 1. A booklet from 1998 explains the intricacies of server-side JavaScript with LiveWire.
 
