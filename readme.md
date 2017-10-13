@@ -12,7 +12,7 @@
 
 ## 对每章的翻译，我的收获
 
-### [第一章 ECMAScript简史 和 JavaScript的未来](https://github.com/zhangwang1990/PracticeModernJavaScript/blob/master/docs/ECMAScript%20%E5%92%8C%20JavaScript%E7%9A%84%E6%9C%AA%E6%9D%A5.md)
+### [第一章 ECMAScript简史 和 JavaScript的未来](https://github.com/zhangwang1990/PracticeModernJavaScript/blob/master/docs/%E7%AC%AC1%E7%AB%A0.%20ECMAScript%20%E5%92%8C%20JavaScript%E7%9A%84%E6%9C%AA%E6%9D%A5.md)
 
 - 温习了JS语言的发展简史；
 - 了解了`stage0`,`stage1`,`stage2`,`stage3`,`stage4`各阶段的意义（以前使用babel时看见过类似的词，但是并不理解）；
